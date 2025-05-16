@@ -4,21 +4,31 @@ import com.spire.pdf.PdfPageBase;
 
 public class imageWatermarkFirst {
     public static void main(String[] args) {
+        // Define the input file paths
         String input1 = "data/headerAndFooter.pdf";
         String input2 = "data/Background.png";
+
+        // Define the output file path
         String output = "output/imageWatermarkFirst.pdf";
 
-        //create a pdf document and load file from disk
+        // Load the PDF document from the first input file
         PdfDocument doc = new PdfDocument();
         doc.loadFromFile(input1);
 
-        //get the first page
+        // Get the first page of the document
         PdfPageBase page = doc.getPages().get(0);
 
-        //Set background image
+        // Set the image as the background of the page
         page.setBackgroundImage(input2);
 
-        //save pdf file
+        // Save the modified PDF document to the specified output file
         doc.saveToFile(output, FileFormat.PDF);
+
+        // Close the PDF document to release resources
+        doc.close();
+
+        // Dispose of the PDF document to free up system resources
+        doc.dispose();
+
     }
 }

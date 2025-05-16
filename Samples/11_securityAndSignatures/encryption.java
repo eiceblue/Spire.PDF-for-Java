@@ -1,25 +1,30 @@
 import com.spire.pdf.*;
-import com.spire.pdf.security.*;
-import java.util.EnumSet;
 
 public class encryption {
     public static void main(String[] args) {
+        // Specify the input and output file paths
         String input = "data/encryption.pdf";
         String output = "output/encryption_output.pdf";
 
-        //load a pdf document.
-        PdfDocument doc = new PdfDocument();
-        doc.loadFromFile(input);
+        // Create a new PdfDocument object
+        PdfDocument pdf = new PdfDocument();
 
-        //encrypt
-        PdfEncryptionKeySize keySize = PdfEncryptionKeySize.Key_128_Bit;
-        String openPassword = "e-iceblue";
-        String permissionPassword = "test";
-        EnumSet<PdfPermissionsFlags> flags = EnumSet.of(PdfPermissionsFlags.Print, PdfPermissionsFlags.Fill_Fields);
-        doc.getSecurity().encrypt(openPassword, permissionPassword, flags, keySize);
+        // Load an existing PDF document from the input file path
+        pdf.loadFromFile(input);
 
-        //save pdf file.
-        doc.saveToFile(output, FileFormat.PDF);
-        doc.close();
+        // Create a PdfSecurityPolicy with the specified user password and owner password
+        PdfSecurityPolicy securityPolicy = new PdfPasswordSecurityPolicy("userpassword", "ownerpassword");
+
+        // Encrypt the PDF document using the specified security policy
+        pdf.encrypt(securityPolicy);
+
+        // Save the encrypted PDF document to the output file path
+        pdf.saveToFile(output, FileFormat.PDF);
+
+        // Close the PDF document to release resources
+        pdf.close();
+
+        // Dispose of the PDF document to free up system resources
+        pdf.dispose();
     }
 }

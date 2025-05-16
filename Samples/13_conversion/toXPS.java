@@ -5,12 +5,17 @@ public class toXPS {
         String inputFile = "data/JavaPDFSample_2.pdf";
         String outputFile = "output/toXPS_out.xps";
 
-        //Open pdf document
+        // Load the file from input path 
         PdfDocument pdf = new PdfDocument();
         pdf.loadFromFile(inputFile);
 
-        //Convert to xps file.
+        // Convert Pdf to xps file.
         pdf.saveToFile(outputFile, FileFormat.XPS);
+
+        // Close the original document
         pdf.close();
+
+        // Dispose of the resources used by the document
+        pdf.dispose();
     }
 }

@@ -5,12 +5,19 @@ public class toDoc {
         String input = "data/JavaPDFSample_1.pdf";
         String output = "output/toDoc_out.doc";
 
-        //Load a pdf document
+        // Create a new PdfDocument
         PdfDocument doc = new PdfDocument();
+
+        // Load the PDF document from the input file
         doc.loadFromFile(input);
 
-        //Convert to doc file.
+        // Save the loaded document as a Word document to the specified output file
         doc.saveToFile(output, FileFormat.DOC);
+
+        // Close the document
         doc.close();
+
+        // Dispose of the resources used by the document
+        doc.dispose();
     }
 }

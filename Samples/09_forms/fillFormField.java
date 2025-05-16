@@ -7,20 +7,23 @@ import java.util.EnumSet;
 
 public class fillFormField {
     public static void main(String[] args) {
-        //Load a PDF file
+        // Load the PDF document
         PdfDocument doc = new PdfDocument();
         doc.loadFromFile("data/fillFormField.pdf");
 
-        //Get the form fields
-        PdfFormFieldWidgetCollection formWidgetCollection = null;
+        // Get the collection of form field widgets
+        PdfFormFieldWidgetCollection formWidgetCollection;
         PdfFormWidget form = (PdfFormWidget) doc.getForm();
         formWidgetCollection = form.getFieldsWidget();
-        PdfFont font = new PdfFont(PdfFontFamily.Courier, 10f, EnumSet.of(PdfFontStyle.Italic));
-        int countIndex = 0;
 
-        //Loop the fields and manipulate them
+        // Specify the font for form fields
+        PdfFont font = new PdfFont(PdfFontFamily.Courier, 10f, EnumSet.of(PdfFontStyle.Italic));
+
+        // Iterate through each field in the form
         for (int i = 0; i < formWidgetCollection.getCount(); i++) {
             PdfField field = formWidgetCollection.get(i);
+
+            // Check the type of the field and perform corresponding actions
             if (field instanceof PdfListBoxWidgetFieldWidget) {
                 PdfListBoxWidgetFieldWidget listBox = (PdfListBoxWidgetFieldWidget) field;
                 listBox.setSelectedIndex(1);
@@ -50,7 +53,14 @@ public class fillFormField {
                 btnField.setFont(font);
             }
         }
-        //Save the file
+
+        // Save the updated PDF document
         doc.saveToFile("output/fillFormField.pdf");
+
+        // Close the PDF document to release resources
+        doc.close();
+
+        // Dispose of the PDF document to free up system resources
+        doc.dispose();
     }
 }

@@ -2,19 +2,26 @@ import com.spire.pdf.*;
 
 public class embedSVG {
     public static void main(String[] args) {
-        //Pdf file
+        // Specify the file paths for the input PDF file and the resulting HTML file.
         String file = "data/JavaPDFSample_1.pdf";
         String result = "output/ToHTMLWithEmbedingSVG_out.html";
 
-        //Open pdf document
+        // Create a new instance of the PdfDocument class.
         PdfDocument doc = new PdfDocument();
+
+        // Load the PDF document from the input file path.
         doc.loadFromFile(file);
 
-        //Set the bool useEmbeddedSvg as true to convert to HTML with embedding SVG
+        // Enable the option to embed SVG images when converting to HTML.
         doc.getConvertOptions().setPdfToHtmlOptions(true);
 
-        //Convert to html file
+        // Convert the PDF document to HTML format with embedded SVG images,
         doc.saveToFile(result, FileFormat.HTML);
+
+        // Close the PDF document to release resources.
         doc.close();
+
+        // Dispose of the PDF document to free up system resources.
+        doc.dispose();
     }
 }

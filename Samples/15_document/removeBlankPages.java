@@ -1,53 +1,53 @@
 import com.spire.pdf.*;
-
 import java.awt.*;
 import java.awt.image.*;
-
 import static com.spire.pdf.graphics.PdfImageType.Bitmap;
 
 public class removeBlankPages {
     public static void main(String[] args) {
-        //Create a new PDF document
+        // Create a PdfDocument object to load the original document
         PdfDocument document = new PdfDocument();
 
-        //Load the file from disk
+        // Load the PDF document from the file "data/removeBlankPages.pdf"
         document.loadFromFile("data/removeBlankPages.pdf");
 
-
-        for (int i = document.getPages().getCount() - 1; i >= 0; i--)
-        {
-            if (document.getPages().get(i).isBlank())
-            {
-                //Remove blank page
+        // Iterate through each page of the document in reverse order
+        for (int i = document.getPages().getCount() - 1; i >= 0; i--) {
+            // Check if the current page is blank based on its content
+            if (document.getPages().get(i).isBlank()) {
+                // Remove the blank page from the document
                 document.getPages().removeAt(i);
-            }
-            else
-            {
-                //Convert the page to a picture if it is not a blank page
+            } else {
+                // Save the page as an image
                 BufferedImage image = document.saveAsImage(i, Bitmap);
-                //Determine whether a picture is blank or not
-                if (isImageBlank(image))
-                {
-                    //Delete the corresponding PDF page if the picture is blank
+
+                // Check if the image is blank
+                if (isImageBlank(image)) {
+                    // Remove the page from the document
                     document.getPages().removeAt(i);
                 }
             }
         }
-        //Save pdf file
+
+        // Specify the output file path for the modified PDF document
         String output = "output/removeBlankPages.pdf";
+
+        // Save the modified document to a new PDF file
         document.saveToFile(output);
+
+        // Close and dispose of system resources associated with the original document
+        document.close();
+        document.dispose();
     }
 
-    public static boolean isImageBlank(BufferedImage image)
-    {
-        for (int i = 0; i < image.getWidth(); i++)
-        {
-            for (int j = 0; j < image.getHeight(); j++)
-            {
+    public static boolean isImageBlank(BufferedImage image) {
+        // Traverse image width and height to obtain pixels
+        for (int i = 0; i < image.getWidth(); i++) {
+            for (int j = 0; j < image.getHeight(); j++) {
                 int pixel = image.getRGB(i, j);
                 Color c = new Color(pixel);
-                if (c.getRed() < 240 || c.getGreen() < 240 || c.getBlue() < 240)
-                {
+                // Check if any color component is below the threshold value of 240
+                if (c.getRed() < 240 || c.getGreen() < 240 || c.getBlue() < 240) {
                     return false;
                 }
             }

@@ -5,12 +5,17 @@ public class xpsToPDF {
         String inputFile = "data/XPStoPDF.xps";
         String outputFile = "output/xpsToPDF_out.pdf";
 
-        //Open xps document
+        // Load the xps file
         PdfDocument doc = new PdfDocument();
         doc.loadFromXPS(inputFile);
 
-        //Convert to pdf file
+        // Convert xps to pdf file
         doc.saveToFile(outputFile);
+
+        // Close the document
         doc.close();
+
+        // Dispose of the resources used by the document
+        doc.dispose();
     }
 }

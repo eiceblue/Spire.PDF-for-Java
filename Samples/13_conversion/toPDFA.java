@@ -1,28 +1,26 @@
-import com.spire.pdf.*;
-import com.spire.pdf.graphics.PdfMargins;
-
-import java.awt.geom.Dimension2D;
+import com.spire.pdf.conversion.PdfStandardsConverter;
 
 public class toPDFA {
     public static void main(String[] args) {
-        String inputFile = "data/JavaPDFSample_1.pdf";
-        String outputFile = "output/toPDFA_result.pdf";
+        // Create a PdfStandardsConverter instance for the input PDF document "sample.pdf"
+        PdfStandardsConverter converter = new PdfStandardsConverter("sample.pdf");
 
-        //Open pdf document
-        PdfDocument document = new PdfDocument();
-        document.loadFromFile(inputFile);
+        // Convert the input PDF to PDF/A-1A standard and save it as "ToPdfA1A.pdf"
+        converter.toPdfA1A("ToPdfA1A.pdf");
 
-        //Convert to Pdf_A_1_B
-        PdfNewDocument newDoc = new PdfNewDocument();
-        newDoc.setConformance(PdfConformanceLevel.Pdf_A_1_B);
-        for (PdfPageBase page : (Iterable<PdfPageBase>) document.getPages()) {
-            Dimension2D size = page.getSize();
-            PdfPageBase p = newDoc.getPages().add(size, new PdfMargins(0));
-            page.createTemplate().draw(p, 0, 0);
-        }
+        // Convert the input PDF to PDF/A-1B standard and save it as "ToPdfA1B.pdf"
+        converter.toPdfA1B("ToPdfA1B.pdf");
 
-        //Save the file
-        newDoc.save(outputFile);
-        newDoc.close();
+        // Convert the input PDF to PDF/A-2A standard and save it as "ToPdfA2A.pdf"
+        converter.toPdfA2A("ToPdfA2A.pdf");
+
+        // Convert the input PDF to PDF/A-2B standard and save it as "ToPdfA2B.pdf"
+        converter.toPdfA2B("ToPdfA2B.pdf");
+
+        // Convert the input PDF to PDF/A-3A standard and save it as "ToPdfA3A.pdf"
+        converter.toPdfA3A("ToPdfA3A.pdf");
+
+        // Convert the input PDF to PDF/A-3B standard and save it as "ToPdfA3B.pdf"
+        converter.toPdfA3B("ToPdfA3B.pdf");
     }
 }

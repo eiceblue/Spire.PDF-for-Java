@@ -1,70 +1,72 @@
 import com.spire.pdf.*;
-
 import java.io.*;
 
 public class getPageInfo {
     public static void main(String[] args) throws IOException {
-        String inputFile ="data/getPageInfo.pdf";
+        // Specify the input and output file paths
+        String inputFile = "data/getPageInfo.pdf";
         String outputFile = "output/getPageInfo_out.txt";
 
-        //Load an existing pdf from disk
+        // Create a new PdfDocument object
         PdfDocument doc = new PdfDocument();
+
+        // Load the PDF document from the input file
         doc.loadFromFile(inputFile);
 
-        //Get the first page of the loaded PDF file
+        // Retrieve the first page of the document
         PdfPageBase page = doc.getPages().get(0);
 
-        //Get the size of page MediaBox based on "point"
+        // Retrieve the width, height, X coordinate, and Y coordinate of the MediaBox
         double MediaBoxWidth = page.getMediaBox().getWidth();
         double MediaBoxHeight = page.getMediaBox().getHeight();
         double MediaBoxX = page.getMediaBox().getX();
         double MediaBoxY = page.getMediaBox().getY();
 
-        //Get the size of page BleedBox based on "point"
+        // Retrieve the width, height, X coordinate, and Y coordinate of the BleedBox
         double BleedBoxWidth = page.getBleedBox().getWidth();
         double BleedBoxHeight = page.getBleedBox().getHeight();
         double BleedBoxX = page.getBleedBox().getX();
         double BleedBoxY = page.getBleedBox().getY();
 
-        //Get the size of page CropBox based on "point"
+        // Retrieve the width, height, X coordinate, and Y coordinate of the CropBox
         double CropBoxWidth = page.getCropBox().getWidth();
         double CropBoxHeight = page.getCropBox().getHeight();
         double CropBoxX = page.getCropBox().getX();
         double CropBoxY = page.getCropBox().getY();
 
-        //Get the size of page ArtBox based on "point"
+        // Retrieve the width, height, X coordinate, and Y coordinate of the ArtBox
         double ArtBoxWidth = page.getArtBox().getWidth();
         double ArtBoxHeight = page.getArtBox().getHeight();
         double ArtBoxX = page.getArtBox().getX();
         double ArtBoxY = page.getArtBox().getY();
 
-        //Get the size of page TrimBox based on "point"
+       // Retrieve the width, height, X coordinate, and Y coordinate of the TrimBox
         double TrimBoxWidth = page.getTrimBox().getWidth();
         double TrimBoxHeight = page.getTrimBox().getHeight();
         double TrimBoxX = page.getTrimBox().getX();
         double TrimBoxY = page.getTrimBox().getY();
 
-        //Get the actual size of page
+        // Retrieve the actual size of the page
         double actualSizeW = page.getActualSize().getWidth();
         double actualSizeH = page.getActualSize().getHeight();
 
-        //Gets the rotation angle of the current page
+        // Retrieve the rotation angle of the page
         PdfPageRotateAngle rotationAngle = page.getRotation();
         String rotation = rotationAngle.toString();
 
-        //Create StringBuilder to save
+        // Create a StringBuilder to store the page information
         StringBuilder content = new StringBuilder();
 
-        //Add page information string to StringBuilder
+        // Append the page information to the StringBuilder
         content.append("MediaBox width: " + MediaBoxWidth + "pt, height: " + MediaBoxHeight + "pt, RectangleF X: " + MediaBoxX + "pt, RectangleF Y: " + MediaBoxY + "pt.");
         content.append("\r\n");
-        content.append("BleedBox width: " + BleedBoxWidth + "pt,  height: " + BleedBoxHeight + "pt, RectangleF X: " + BleedBoxX + "pt, RectangleF Y: " + BleedBoxY + "pt.");
+        content.append("BleedBox width: " + BleedBoxWidth + "pt, height: " + BleedBoxHeight + "pt, RectangleF X: " + BleedBoxX + "pt, RectangleF Y: " + BleedBoxY + "pt.");
         content.append("\r\n");
-        content.append("CropBox width: " + CropBoxWidth + "pt,  height: " + CropBoxHeight + "pt, RectangleF X: " + CropBoxX + "pt, RectangleF Y: " + CropBoxY + "pt.");
+        content.append("CropBox width: " + CropBoxWidth + "pt, height: " + CropBoxHeight + "pt, RectangleF X: " + CropBoxX + "pt, RectangleF Y: " + CropBoxY + "pt.");
         content.append("\r\n");
-        content.append("ArtBox width: " + ArtBoxWidth + "pt,  height: " + ArtBoxHeight + "pt, RectangleF X: " + ArtBoxX + "pt, RectangleF Y: " + ArtBoxY + "pt.");
+        content.append("ArtBox width: " + ArtBoxWidth + "pt, height: " + ArtBoxHeight + "pt, RectangleF X: " + ArtBoxX + "pt, RectangleF Y: " + ArtBoxY + "pt.");
         content.append("\r\n");
-        content.append("TrimBox width: " + TrimBoxWidth + "pt,  height: " + TrimBoxHeight + "pt, RectangleF X: " + TrimBoxX + "pt, RectangleF Y: " + TrimBoxY + "pt.");
+        content.append("TrimBox width: " + TrimBoxWidth + "pt, height: " + TrimBoxHeight + "pt, RectangleF X: " + TrimBoxX + "pt, RectangleF Y: " + TrimBoxY + "pt.");
         content.append("\r\n");
         content.append("The actual size of the current page width: " + actualSizeW);
         content.append("\r\n");
@@ -73,10 +75,16 @@ public class getPageInfo {
         content.append("The rotation angle of the current page: " + rotation);
         content.append("\r\n");
 
-        //Save them to a txt file
+        // Create a FileWriter to write the page information to the output file
         FileWriter writer = new FileWriter(outputFile);
         writer.write(content.toString());
         writer.flush();
         writer.close();
+
+        // Close the PDF document to release resources
+        doc.close();
+
+        // Dispose of the PDF document to free up system resources
+        doc.dispose();
     }
 }

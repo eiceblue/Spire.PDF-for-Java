@@ -7,66 +7,112 @@ import java.awt.geom.Rectangle2D;
 
 public class insertPageBreak {
     public static void main(String[] args) {
-        //Create a Pdf document
+		// Create a new Pdf document
         PdfDocument doc = new PdfDocument();
         PdfPageBase page = doc.getPages().add();
 
+        // Set the initial y-coordinate for drawing content on the page
         float y = 10;
 
-        //Title
+        // Define brush, font, and format for the title
         PdfBrush brush1 = PdfBrushes.getBlack();
-        PdfTrueTypeFont font1 = new PdfTrueTypeFont(new Font("Arial",Font.BOLD,16));
+        PdfTrueTypeFont font1 = new PdfTrueTypeFont(new Font("Arial", Font.BOLD, 16));
         PdfStringFormat format1 = new PdfStringFormat(PdfTextAlignment.Center);
-        page.getCanvas().drawString("Country List", font1, brush1, page.getCanvas().getClientSize().getWidth() / 2, y, format1);
-        y = y + (float)font1.measureString("Country List", format1).getHeight();
-        y = y + 5;
 
-        //Create a table
+        // Draw the title "Country List" at the center of the page
+        page.getCanvas().drawString("Country List", font1, brush1, page.getCanvas().getClientSize().getWidth() / 2, y, format1);
+        y = y + (float)font1.measureString("Country List", format1).getHeight(); // Increase y by the height of the title
+        y = y + 5; // Add some extra space below the title
+
+        // Create a new PdfTable instance
         PdfTable table = new PdfTable();
+
+        // Set the border pen for the table
         table.getStyle().setBorderPen(new PdfPen(brush1, 0.5f));
 
-        //Header style
+        // Use rows as the header source
         table.getStyle().setHeaderSource(PdfHeaderSource.Rows);
+
+        // Specify that only one row will be used as the header
         table.getStyle().setHeaderRowCount(1);
+
+        // Set to true to display the header
         table.getStyle().setShowHeader(true);
+
+        // Set the background brush of the header cells to Cadet Blue
         table.getStyle().getHeaderStyle().setBackgroundBrush(PdfBrushes.getCadetBlue());
-        table.getStyle().getHeaderStyle().setFont(new PdfTrueTypeFont(new Font("Arial",Font.BOLD, 14)));
+
+        // Set the font of the header cells to Arial, bold, with a size of 14
+        table.getStyle().getHeaderStyle().setFont(new PdfTrueTypeFont(new Font("Arial", Font.BOLD, 14)));
+
+        // Set the string format of the header cells to center alignment horizontally and middle alignment vertically
         table.getStyle().getHeaderStyle().setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
-        //Repeat header
+
+        // Enable repeating of the header on each page
         table.getStyle().setRepeatHeader(true);
-        //Body style
+
+        // Set the default background brush of the cells to Sky Blue
         table.getStyle().getDefaultStyle().setBackgroundBrush(PdfBrushes.getSkyBlue());
-        table.getStyle().getDefaultStyle().setFont(new PdfTrueTypeFont(new Font("Arial",Font.PLAIN, 10)));
+
+        // Set the default font of the cells to Arial, plain, with a size of 10
+        table.getStyle().getDefaultStyle().setFont(new PdfTrueTypeFont(new Font("Arial", Font.PLAIN, 10)));
+
+        // Set the default string format of the cells to center alignment horizontally and middle alignment vertically
         table.getStyle().getDefaultStyle().setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
+
+        // Create a new alternate style instance
         table.getStyle().setAlternateStyle(new PdfCellStyle());
+
+        // Set the background brush of the alternate cells to Light Yellow
         table.getStyle().getAlternateStyle().setBackgroundBrush(PdfBrushes.getLightYellow());
-        table.getStyle().getAlternateStyle().setFont(new PdfTrueTypeFont(new Font("Arial",Font.PLAIN, 10)));
+
+        // Set the font of the alternate cells to Arial, plain, with a size of 10
+        table.getStyle().getAlternateStyle().setFont(new PdfTrueTypeFont(new Font("Arial", Font.PLAIN, 10)));
+
+        // Set the string format of the alternate cells to center alignment horizontally and middle alignment vertically
         table.getStyle().getAlternateStyle().setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
 
+        // Set the data source for the table
         table.setDataSource(GetData());
 
-        //Set the Pdf table layout and specify the paginate bounds
+        // Create an instance of PdfTableLayoutFormat to specify the table layout settings
         PdfTableLayoutFormat tableLayout = new PdfTableLayoutFormat();
+
+        // Set the layout break type to fit the element on the page
         tableLayout.setBreak(PdfLayoutBreakType.Fit_Element);
+
+        // Set the layout type to paginate
         tableLayout.setLayout(PdfLayoutType.Paginate);
+
+        // Set the paginate bounds, specifying the rectangle area where the table will be paginated
         tableLayout.setPaginateBounds(new Rectangle2D.Double(0, y, page.getActualSize().getWidth() - 100, page.getActualSize().getHeight() / 3));
 
-        //Set the row height
+        // Set the row height using a BeginRowLayoutEventHandler
         table.beginRowLayout.add(new BeginRowLayoutEventHandler() {
             @Override
-            public void invoke(Object sender, BeginRowLayoutEventArgs args) { table_BeginRowLayout(sender,args);
-            }});
+            public void invoke(Object sender, BeginRowLayoutEventArgs args) {
+                table_BeginRowLayout(sender, args);
+            }
+        });
 
-        //Draw the table in page
-         table.draw(page, new Point2D.Float(0, y), tableLayout);
+        // Draw the table on the page at the specified location with the given table layout format
+        table.draw(page, new Point2D.Float(0, y), tableLayout);
 
-        //Save the document
+        // Save the document to the specified output file path
         String output = "output/insertPageBreak_out.pdf";
         doc.saveToFile(output);
+
+        // Close the PDF document
         doc.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        doc.dispose();
     }
-    private static String[][] GetData()
-    {
+	
+	
+     // Define the data and return it
+    private static String[][] GetData() {
+        // Define the data array with country information
         String[] data = {
                 "Name;Capital;Continent;Area;Population",
                 "Argentina;Buenos Aires;South America;2777815;32300003",
@@ -89,16 +135,16 @@ public class insertPageBreak {
                 "Venezuela;Caracas;South America;912047;19700000"
         };
 
-        String[][] dataSource
-                = new String[data.length][];
-        for (int i = 0; i < data.length; i++)
-        {
+        String[][] dataSource = new String[data.length][];
+        for (int i = 0; i < data.length; i++) {
             dataSource[i] = data[i].split(";");
         }
         return dataSource;
     }
-    static void table_BeginRowLayout(Object sender, BeginRowLayoutEventArgs args)
-    {
+
+    // This method is called when the layout of a table row begins.
+    static void table_BeginRowLayout(Object sender, BeginRowLayoutEventArgs args) {
+        // Set a minimal height for each row during layout
         args.setMinimalHeight(50f);
     }
 }

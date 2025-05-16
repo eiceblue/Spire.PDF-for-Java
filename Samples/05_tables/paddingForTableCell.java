@@ -5,39 +5,46 @@ import java.awt.geom.Point2D;
 
 public class paddingForTableCell {
     public static void main(String[] args) {
-        //Load Pdf from disk
+        // Create a new PDF document
         PdfDocument doc = new PdfDocument();
 
-        //Add a page
-        PdfPageBase page = doc.getPages().add(PdfPageSize.A4,new PdfMargins(5));
+        // Add a page to the document with A4 size and 5mm margins
+        PdfPageBase page = doc.getPages().add(PdfPageSize.A4, new PdfMargins(5));
 
-        //Add a grid
+        // Create a new grid
         PdfGrid grid = new PdfGrid();
 
-        //Set the cell padding
+        // Set the cell padding for the grid
         grid.getStyle().setCellPadding(new PdfPaddings(10, 10, 10, 10));
 
-        //Fill data in grid
+        // Fill data into the grid by setting its data source
         grid.setDataSource(GetData());
 
-        //Set alignment
-        for(int i=0;i<grid.getRows().size();i++) {
+        // Set alignment for each cell in the grid
+        for (int i = 0; i < grid.getRows().size(); i++) {
             PdfGridRow row = grid.getRows().get(i);
-            for(int j=0;j<row.getCells().getCount();j++){
+            for (int j = 0; j < row.getCells().getCount(); j++) {
                 row.getCells().get(j).setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
             }
         }
 
-        //Draw the grid in page
+        // Draw the grid on the page at the specified location (0, 0)
         grid.draw(page, new Point2D.Float(0, 0));
 
+        // Save the PDF document to the specified output file path
         String result = "output/paddingForTableCell_out.pdf";
-
-        //Save the pdf document
         doc.saveToFile(result);
+
+        // Close the PDF document
+        doc.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        doc.dispose();
     }
-    private static String[][] GetData()
-    {
+   
+   
+   private static String[][] GetData() {
+        // Define the data array containing information about countries
         String[] data = {
                 "Name;Capital;Continent;Area;Population",
                 "Argentina;Buenos Aires;South America;2777815;32300003",
@@ -60,12 +67,15 @@ public class paddingForTableCell {
                 "Venezuela;Caracas;South America;912047;19700000"
         };
 
-        String[][] dataSource
-                = new String[data.length][];
-        for (int i = 0; i < data.length; i++)
-        {
+        // Create a 2D array to hold the parsed data
+        String[][] dataSource = new String[data.length][];
+
+        // Split each string in the data array and store it in the dataSource array
+        for (int i = 0; i < data.length; i++) {
             dataSource[i] = data[i].split(";");
         }
+
+        // Return the parsed data
         return dataSource;
     }
 }

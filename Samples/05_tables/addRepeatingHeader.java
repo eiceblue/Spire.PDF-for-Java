@@ -7,82 +7,133 @@ import java.awt.geom.Point2D;
 
 public class addRepeatingHeader {
     public static void main(String[] args) {
-        //Create a pdf document
+  // Create a PDF document
         PdfDocument doc = new PdfDocument();
-        //Set the margin
+
+        // Create an instance of the PdfUnitConvertor class to convert measurements
         PdfUnitConvertor unitCvtr = new PdfUnitConvertor();
+
+        // Create margin settings for the document
         PdfMargins margin = new PdfMargins();
+
+        // Set the top margin by converting 2.54 centimeters to points
         margin.setTop(unitCvtr.convertUnits(2.54f, PdfGraphicsUnit.Centimeter, PdfGraphicsUnit.Point));
+
+        // Set the bottom margin equal to the top margin
         margin.setBottom(margin.getTop());
+
+        // Set the left margin by converting 3.17 centimeters to points
         margin.setLeft(unitCvtr.convertUnits(3.17f, PdfGraphicsUnit.Centimeter, PdfGraphicsUnit.Point));
+
+        // Set the right margin equal to the left margin
         margin.setRight(margin.getLeft());
 
-        //Add a page
+        // Add a page to the document
         PdfPageBase page = doc.getPages().add(PdfPageSize.A4, margin);
 
         float y = 10;
 
-        //Title
+        // Set the font and format for the title
         PdfBrush brush = PdfBrushes.getBlack();
         PdfTrueTypeFont font = new PdfTrueTypeFont(new Font("Arial",  Font.BOLD,16));
         PdfStringFormat format = new PdfStringFormat(PdfTextAlignment.Center);
+
+        // Draw the title on the page
         page.getCanvas().drawString("Country List", font, brush, page.getCanvas().getClientSize().getWidth() / 2, y, format);
         y = y + (float) font.measureString("Country List", format).getHeight();
         y = y + 5;
 
-        //Create data table
+        // Create a data table
         PdfTable table = new PdfTable();
+
+        // Set the border of the table
         table.getStyle().setBorderPen(new PdfPen(brush, 0.5f));
 
-        //Header style
+        // Set the source of the table header to be based on rows
         table.getStyle().setHeaderSource(PdfHeaderSource.Rows);
+
+        // Specify that there is only one row in the table header
         table.getStyle().setHeaderRowCount(1);
+
+        // Set the visibility of the table header to true
         table.getStyle().setShowHeader(true);
+
+        // Set the background color of the table header to Cadet Blue
         table.getStyle().getHeaderStyle().setBackgroundBrush(PdfBrushes.getCadetBlue());
-        table.getStyle().getHeaderStyle().setFont(new PdfTrueTypeFont(new Font("Arial", Font.BOLD,14)));
+
+        // Set the font style for the table header as Arial, bold, with a size of 14
+        table.getStyle().getHeaderStyle().setFont(new PdfTrueTypeFont(new Font("Arial", Font.BOLD, 14)));
+
+        // Set the text alignment and vertical alignment of the table header to center
         table.getStyle().getHeaderStyle().setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
-        //Repeat header
+
+        // Enable repeating headers on each page
         table.getStyle().setRepeatHeader(true);
-
-        //Body style
+        
+        // Set the background color of the default style for table cells to Sky Blue
         table.getStyle().getDefaultStyle().setBackgroundBrush(PdfBrushes.getSkyBlue());
-        table.getStyle().getDefaultStyle().setFont(new PdfTrueTypeFont(new Font("Arial", Font.PLAIN, 10)));
-        table.getStyle().setAlternateStyle(new PdfCellStyle());
-        table.getStyle().getAlternateStyle().setBackgroundBrush(PdfBrushes.getLightYellow());
-        table.getStyle().getAlternateStyle().setFont(new PdfTrueTypeFont(new Font("Arial",Font.PLAIN, 10)));
 
+        // Set the font style for the default style of table cells as Arial, plain, with a size of 10
+        table.getStyle().getDefaultStyle().setFont(new PdfTrueTypeFont(new Font("Arial", Font.PLAIN, 10)));
+
+        // Create a new PdfCellStyle instance for the alternate style
+        table.getStyle().setAlternateStyle(new PdfCellStyle());
+
+        // Set the background color of the alternate style for table cells to Light Yellow
+        table.getStyle().getAlternateStyle().setBackgroundBrush(PdfBrushes.getLightYellow());
+
+        // Set the font style for the alternate style of table cells as Arial, plain, with a size of 10
+        table.getStyle().getAlternateStyle().setFont(new PdfTrueTypeFont(new Font("Arial", Font.PLAIN, 10)));
+
+        // Set the data source for the table
         table.setDataSource(GetData());
 
-        for(int i=0; i<table.getColumns().getCount();i++)
-        {
+        // Set the string format for each column in the table
+        for(int i=0; i<table.getColumns().getCount();i++) {
             PdfColumn column= table.getColumns().get(i);
             column.setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
         }
 
-        //Set the row height
+        // Add an event handler for the row layout
         table.beginRowLayout.add(new BeginRowLayoutEventHandler() {
             @Override
-            public void invoke(Object sender, BeginRowLayoutEventArgs args) { table_BeginRowLayout(sender,args);
-            }});
+            public void invoke(Object sender, BeginRowLayoutEventArgs args) {
+                table_BeginRowLayout(sender,args);
+            }
+        });
 
-
-        //Draw text below the table
+        // Draw the table on the page
         PdfLayoutResult result = table.draw(page, new Point2D.Float(0, y));
         y = y + (float) result.getBounds().getHeight() + 5;
+
+        // Set the font and format for the footer
         PdfBrush brush2 = PdfBrushes.getGray();
         PdfTrueTypeFont font2 = new PdfTrueTypeFont(new Font("Arial",Font.PLAIN, 9));
+
+        // Draw the footer text on the page
         page.getCanvas().drawString("* "+ table.getRows().getCount()+" countries in the list.", font2, brush2, 5, y);
 
-        //Save the document
+        // Save the document
         doc.saveToFile("output/addRepeatingColumn_out.pdf");
+
+        // Close the PDF document
+        doc.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        doc.dispose();
     }
-   static void table_BeginRowLayout(Object sender, BeginRowLayoutEventArgs args)
-    {
+
+  // Event handler for the beginning layout of a table row.
+    static void table_BeginRowLayout(Object sender, BeginRowLayoutEventArgs args) {
+        // Set the minimal height of the row to 50 units
         args.setMinimalHeight(50f);
     }
-    private static String[][] GetData()
-    {
-        String[] data= {
+
+
+    // Retrieves the data for the table.
+    private static String[][] GetData() {
+        // Define the data for the table
+        String[] data = {
                 "Name;Capital;Continent;Area;Population",
                 "Argentina;Buenos Aires;South America;2777815;32300003",
                 "Bolivia;La Paz;South America;1098575;7300000",
@@ -104,10 +155,10 @@ public class addRepeatingHeader {
                 "Venezuela;Caracas;South America;912047;19700000"
         };
 
-        String[][] dataSource
-                = new String[data.length][];
-        for (int i = 0; i < data.length; i++)
-        {
+        // Convert the data into a two-dimensional array
+        String[][] dataSource = new String[data.length][];
+        for (int i = 0; i < data.length; i++) {
+            // Split each row of data by the semicolon delimiter and assign it to the corresponding row in the array
             dataSource[i] = data[i].split(";");
         }
         return dataSource;

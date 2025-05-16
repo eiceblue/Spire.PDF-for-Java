@@ -3,17 +3,31 @@ import com.spire.pdf.conversion.XlsxLineLayoutOptions;
 
 public class toXlsxOptions {
     public static void main(String[] args) {
-        String input="data/toXlsxOptions.pdf";
-        String output="output/toXlsxOptions_out.xlsx";
+        // Specify the input PDF file path
+        String input = "data/toXlsxOptions.pdf";
 
-        //load pdf from disk
-        PdfDocument document=new PdfDocument();
+        // Specify the output XLSX file path
+        String output = "output/toXlsxOptions_out.xlsx";
+
+        // Create a new PdfDocument object
+        PdfDocument document = new PdfDocument();
+
+        // Load the PDF document from the input file
         document.loadFromFile(input);
-        //these four parameters represent: convertToMultipleSheet, showRotatedText,  splitCell,  wrapText
+
+        // Create a new XlsxLineLayoutOptions object with the specified parameters: convertToMultipleSheet,showRotatedText,splitCell,wrapText
         XlsxLineLayoutOptions options = new XlsxLineLayoutOptions(false, false, false, false);
-        //set pdf to excel options
+
+        // Set the XlsxLineLayoutOptions object as the conversion options for the PdfDocument
         document.getConvertOptions().setPdfToXlsxOptions(options);
-        //save to excel
+
+        // Save the converted document to the output XLSX file
         document.saveToFile(output, FileFormat.XLSX);
+
+        // Close the original document
+        document.close();
+
+        // Dispose of the resources used by the document
+        document.dispose();
     }
 }

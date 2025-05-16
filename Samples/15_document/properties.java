@@ -2,11 +2,13 @@ import com.spire.pdf.*;
 
 public class properties {
     public static void main(String[] args) {
-        //Load pdf document
+        // Create a PdfDocument object to load the original document
         PdfDocument doc = new PdfDocument();
+
+        // Load the PDF document from the file "data/properties.pdf"
         doc.loadFromFile("data/properties.pdf");
 
-        //Set document info
+        // Modify the document properties
         doc.getDocumentInformation().setAuthor("E-iceblue");
         doc.getDocumentInformation().setCreator("E-iceblue");
         doc.getDocumentInformation().setKeywords("pdf, demo, document information");
@@ -14,14 +16,19 @@ public class properties {
         doc.getDocumentInformation().setSubject("Demo of Spire.PDF");
         doc.getDocumentInformation().setTitle("Document Information");
 
-        //File info
+        // Set specific options for the PDF file information
         doc.getFileInfo().setCrossReferenceType(PdfCrossReferenceType.Cross_Reference_Stream);
         doc.getFileInfo().setIncrementalUpdate(false);
         doc.getFileInfo().setVersion(PdfVersion.Version_1_5);
 
-        //Save pdf file.
+        // Specify the output file path for the modified PDF document
         String output = "output/properties.pdf";
+
+        // Save the modified document to a new PDF file
         doc.saveToFile(output);
+
+        // Close and dispose of system resources associated with the original document
         doc.close();
+        doc.dispose();
     }
 }

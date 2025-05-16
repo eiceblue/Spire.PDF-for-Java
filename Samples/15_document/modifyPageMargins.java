@@ -1,38 +1,52 @@
 import com.spire.pdf.*;
 import com.spire.pdf.graphics.*;
-
 import java.awt.geom.*;
 
 public class modifyPageMargins {
     public static void main(String[] args) {
+        // Create a PdfDocument object to load the original document
         PdfDocument doc = new PdfDocument();
-        // Read a pdf file
+
+        // Load the PDF document from the file "data/modifyPageMargins.pdf"
         doc.loadFromFile("data/modifyPageMargins.pdf");
 
-        // Creates a new pdf document
+        // Create a new PdfDocument object to hold the modified document
         PdfDocument newDoc = new PdfDocument();
 
-        // Defines the page margins of the new document
+        // Define the desired top, bottom, left, and right margins
         float top = 50;
         float bottom = 50;
         float left = 50;
         float right = 50;
 
-        for (int i = 0; i < doc.getPages().getCount(); i++)
-        {
+        // Iterate through each page of the original document
+        for (int i = 0; i < doc.getPages().getCount(); i++) {
+            // Get the current page from the original document
             PdfPageBase page = doc.getPages().get(i);
-            // Adds a new page to the new document and set the page size to be the same as the source document
+
+            // Create a new page in the modified document with adjusted margins
             PdfPageBase newPage = newDoc.getPages().add(page.getSize(), new PdfMargins(0));
-            // Set the scale of the new document content
+
+            // Scale the content of the original page to fit within the adjusted margins
             newPage.getCanvas().scaleTransform((page.getActualSize().getWidth() - left - right) / page.getActualSize().getWidth(),
                     (page.getActualSize().getHeight() - top - bottom) / page.getActualSize().getHeight());
-            // Draws the content of the source page onto the new document page
+
+            // Draw the scaled content onto the new page
             newPage.getCanvas().drawTemplate(page.createTemplate(), new Point2D.Float(left, top));
         }
 
-
-        //Save the document
+        // Specify the output file path for the modified PDF document
         String output = "output/modifyPageMargins.pdf";
+
+        // Save the modified document to a new PDF file
         newDoc.saveToFile(output, FileFormat.PDF);
+
+        // Close and dispose of system resources associated with the original document
+        doc.close();
+        doc.dispose();
+
+        // Close and dispose of system resources associated with the modified document
+        newDoc.close();
+        newDoc.dispose();
     }
 }

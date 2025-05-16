@@ -4,33 +4,43 @@ import java.awt.*;
 
 public class drawDashedLine {
     public static void main(String[] args) {
+       // Create a new PDF document
         PdfDocument pdf = new PdfDocument();
-        //Create one page
+
+        // Add a new page to the document
         PdfPageBase page = pdf.getPages().add();
 
-        //Save graphics state
+        // Save the current graphics state
         PdfGraphicsState state = page.getCanvas().save();
 
-        //Draw line
-        //Set location and size
         float x = 150;
         float y = 200;
         float width = 300;
 
-        //Create pens
-        PdfPen pen = new PdfPen(new PdfRGBColor(Color.red), 3f);
-        //Set dash style and pattern
-        pen.setDashStyle(PdfDashStyle.Dash);
-        pen.setDashPattern (new float[] { 1, 4, 1 });
+        // Create a pen with red color and thickness of 3
+        PdfPen pen = new PdfPen(new PdfRGBColor(255, 0, 0), 3f);
 
+        // Set the dash style of the pen to "Dash"
+        pen.setDashStyle(PdfDashStyle.Dash);
+
+        // Set the dash pattern of the pen
+        pen.setDashPattern(new float[]{1, 4, 1});
+
+        // Draw a dashed line on the page using the pen
         page.getCanvas().drawLine(pen, x, y, x + width, y);
 
-        //Restore graphics
+        // Restore the previous graphics state
         page.getCanvas().restore(state);
 
         String result = "output/drawDashedLine_out.pdf";
 
-        //Save the document
+        // Save the PDF document to a file
         pdf.saveToFile(result);
+
+        // Close the PDF document
+        pdf.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        pdf.dispose();
     }
 }

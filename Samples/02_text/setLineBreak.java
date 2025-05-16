@@ -20,7 +20,6 @@ public class setLineBreak {
                 " creating, writing, editing, handling and reading PDF files" +
                 " without any external dependencies within .NET" +
                 "( C#, VB.NET, ASP.NET, .NET Core) application.";
-
         text += "\n\rSpire.PDF for Java" +
                 "\n" +
                 "A PDF Java API that enables developers to read, " +
@@ -35,9 +34,16 @@ public class setLineBreak {
         //Draw the text
         page.getCanvas().drawString(text, new PdfFont(PdfFontFamily.Helvetica, 13f), brush, rect);
 
+        // Output file path to save the modified document
         String result = "output/setLineBreak.pdf";
 
         //Save the document
         doc.saveToFile(result, FileFormat.PDF);
+
+        // Close the PDF document
+        doc.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        doc.dispose();
     }
 }

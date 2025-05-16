@@ -1,57 +1,68 @@
 import com.spire.pdf.*;
-import com.spire.pdf.exporting.*;
 import com.spire.pdf.graphics.*;
+import com.spire.pdf.utilities.PdfImageHelper;
+import com.spire.pdf.utilities.PdfImageInfo;
 import java.awt.*;
 import java.awt.geom.*;
 
 public class replaceImageWithText {
     public static void main(String[] args)throws Exception {
+      // Specify the input PDF file path
         String input = "data/DeleteImage.pdf";
+
+        // Specify the output PDF file path for the modified document
         String output = "output/replaceImageWithText.pdf";
 
-        //create a pdf document
+        // Create a new PdfDocument instance
         PdfDocument doc = new PdfDocument();
 
-        //load file from disk.
+        // Load the PDF document from the input file path
         doc.loadFromFile(input);
 
-        //get the first page.
+        // Get the first page of the document
         PdfPageBase page = doc.getPages().get(0);
 
-        //get images of the first page.
-        PdfImageInfo[] imageInfo = page.getImagesInfo();
+        // Get information about the images present on the page
+        PdfImageHelper imageHelper = new PdfImageHelper();
+        PdfImageInfo[] imageInfo = imageHelper.getImagesInfo(page);
 
-        //get width and height of image
+        // Retrieve the width and height of the first image in pixels
         float widthInPixel = imageInfo[0].getImage().getWidth();
         float heightInPixel = imageInfo[0].getImage().getHeight();
 
-        //convert unit from Pixel to Point
+        // Convert the width and height from pixel units to points
         PdfUnitConvertor convertor = new PdfUnitConvertor();
         float width = convertor.convertUnits(widthInPixel, PdfGraphicsUnit.Pixel, PdfGraphicsUnit.Point);
         float height = convertor.convertUnits(heightInPixel, PdfGraphicsUnit.Pixel,PdfGraphicsUnit.Point);
 
-        //get location of image
-        float xPos=(float) imageInfo[0].getBounds().getX();
-        float yPos=(float)imageInfo[0].getBounds().getY();
+        // Get the location (x, y) of the first image's bounding box
+        float xPos = (float) imageInfo[0].getBounds().getX();
+        float yPos = (float) imageInfo[0].getBounds().getY();
 
-        //remove the image
-        page.deleteImage(0);
+        // Delete the first image from the page
+        imageHelper.deleteImage(imageInfo[0]);
 
-        //define a rectangle
+        // Create a rectangle using the image's location and size
         Dimension2D dimension2D = new Dimension();
         dimension2D.setSize(width, height);
         Rectangle2D rect = new Rectangle2D.Float();
         rect.setFrame(new Point2D.Float(xPos, yPos), dimension2D);
 
-        //define string format
-        PdfStringFormat format=new PdfStringFormat();
+        // Specify the format for the replacement text
+        PdfStringFormat format = new PdfStringFormat();
         format.setAlignment(PdfTextAlignment.Center);
         format.setLineAlignment(PdfVerticalAlignment.Middle);
 
-        //draw a string at the location of the image
+        // Draw the replacement text on the page's canvas within the specified rectangle
         page.getCanvas().drawString("ReplacedText", new PdfFont(PdfFontFamily.Helvetica, 18f), PdfBrushes.getDeepSkyBlue(), rect, format);
 
-        //save the document
+        // Save the modified PDF document to the specified output file path
         doc.saveToFile(output, FileFormat.PDF);
+
+        // Close the PDF document
+        doc.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        doc.dispose();
     }
 }

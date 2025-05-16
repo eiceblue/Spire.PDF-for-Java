@@ -1,52 +1,74 @@
 import com.spire.pdf.*;
-import com.spire.pdf.general.find.*;
 import com.spire.pdf.graphics.*;
-
+import com.spire.pdf.texts.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.*;
+import java.util.EnumSet;
+import java.util.List;
 
 public class searchTextAndGetAllBounds {
 
     public static void main(String args[]) {
-        //Input and output files
-        String inputFile="data/FindTextAndGetAllBounds.pdf";
-        String outputFile="output/CoverAllFindingBounds.pdf";
-        //Create a pdf document
+        // Input and output files
+        String inputFile = "data/FindTextAndGetAllBounds.pdf";
+        String outputFile = "output/CoverAllFindingBounds.pdf";
+
+        // Create a PDF document
         PdfDocument pdf = new PdfDocument();
-        //Load the document from disk
+
+        // Load the document from disk
         pdf.loadFromFile(inputFile);
-        //Create an array of PdfTextFind to receive the finding results
-        PdfTextFind[] result = null;
-        //Traverse all pages
+
+        // Initialize a variable to store search results
+        List<PdfTextFragment> results = null;
+
+        // Create text find options for searching
+        PdfTextFindOptions findOptions = new PdfTextFindOptions();
+
+        // Ignore case when finding text
+        findOptions.setTextFindParameter(EnumSet.of(TextFindParameter.IgnoreCase));
+
+        PdfTextFinder textFinder = null;
+
         for (Object pageObj : pdf.getPages()) {
-            //Cast the type of pageObj to PdfPageBase
+            // Get the current page
             PdfPageBase page = (PdfPageBase) pageObj;
-            //Save the canvas state
+
+            // Save the current graphics state
             PdfGraphicsState state = page.getCanvas().save();
-            //Create a PdfPen
+
+            // Define pen and brush for drawing rectangles
             PdfPen pen = new PdfPen(new PdfRGBColor(Color.BLACK), 1f);
-            //Create a PdfBrush
             PdfBrush brush = new PdfSolidBrush(new PdfRGBColor(Color.RED));
-            // Find text
-            result = page.findText("Customized Demo", EnumSet.of(TextFindParameter.CrossLine,TextFindParameter.IgnoreCase)).getFinds();
-            //Traverse all finding results
-            for (PdfTextFind find : result) {
-                //Get all bounds of a find text
-                List<Rectangle2D> bounds = find.getTextBounds();
-                //Traverse all bounds
+
+            // Create a PdfTextFinder object with the current page
+            textFinder = new PdfTextFinder(page);
+
+            // Find the specified text using the given find options
+            results = textFinder.find("Customized Demo", findOptions);
+
+            // Traverse all finding results
+            for (PdfTextFragment find : results) {
+                // Get all bounds of a found text
+                Rectangle2D[] bounds = find.getBounds();
+
+                // Draw a rectangle around each found text
                 for (Rectangle2D rect : bounds) {
-                    //Draw a rectangle
                     page.getCanvas().drawRectangle(pen, brush, rect);
                 }
             }
-            //Restore the state of canvas
+
+            // Restore the graphics state
             page.getCanvas().restore(state);
         }
-        //Save the document
+
+        // Save the modified document
         pdf.saveToFile(outputFile, FileFormat.PDF);
-        //Close the document
+
+        // Close the PDF document
         pdf.close();
-		pdf.dispose();
+
+        // Dispose of the PDF document (frees up system resources)
+        pdf.dispose();
     }
 }

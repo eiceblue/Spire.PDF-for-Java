@@ -1,41 +1,45 @@
-
-
 import com.spire.pdf.PdfDocument;
 import com.spire.pdf.fields.PdfField;
 import com.spire.pdf.widget.*;
-
 import java.awt.geom.Point2D;
-
 
 public class changeFormFieldLocation {
     public static void main(String[] args) throws Exception{
+        // Load the PDF document
         PdfDocument doc = new PdfDocument();
         doc.loadFromFile("data/TextBoxSample.pdf");
 
-        //Get pdf forms
-        PdfFormWidget formWidget = (PdfFormWidget)doc.getForm();
-        for (int i = 0; i < formWidget.getFieldsWidget().getList().size(); i++)
-        {
-            PdfField field = (PdfField)formWidget.getFieldsWidget().getList().get(i);
+        // Get the form widget from the document
+        PdfFormWidget formWidget = (PdfFormWidget) doc.getForm();
 
-            if (field instanceof PdfTextBoxFieldWidget)
-            {
-                PdfTextBoxFieldWidget textbox = (PdfTextBoxFieldWidget)field;
+        // Iterate through each field in the form
+        for (int i = 0; i < formWidget.getFieldsWidget().getList().size(); i++) {
+            // Get the current field
+            PdfField field = (PdfField) formWidget.getFieldsWidget().getList().get(i);
 
-                //Find the textbox named Text1
-                if (textbox.getName().equals("Text1"))
-                {
-                    // Change field location
+            // Check if the field is a text box field
+            if (field instanceof PdfTextBoxFieldWidget) {
+                // Cast the field to a text box field
+                PdfTextBoxFieldWidget textbox = (PdfTextBoxFieldWidget) field;
+
+                // Check if the text box field has the name "Text1"
+                if (textbox.getName().equals("Text1")) {
+                    // Update the location of the text box field
                     textbox.setLocation(new Point2D.Float(200, 400));
                 }
             }
         }
 
-        String output="output/changeFormFieldLocation-result.pdf";
+        // Specify the output file path
+        String output = "output/changeFormFieldLocation-result.pdf";
 
-        //Save to file
+        // Save the modified PDF document to the output file
         doc.saveToFile(output);
 
-    }
+        // Close the PDF document to release resources
+        doc.close();
 
+        // Dispose of the PDF document to free up system resources
+        doc.dispose();
+    }
 }

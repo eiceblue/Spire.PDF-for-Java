@@ -3,23 +3,27 @@ import com.spire.pdf.graphics.layer.*;
 
 public class invisibleAllPdfLayers {
     public static void main(String[] args) {
-        //Create a new PDF document
+        // Create a new PdfDocument object
         PdfDocument doc = new PdfDocument();
 
-        //Load the file from disk
+        // Load the PDF document from a file
         doc.loadFromFile("data/layerSample.pdf");
 
-        for (int i = 0; i < doc.getLayers().getCount(); i++)
-        {
-            //Show all the Pdf layers
-            //doc.getLayers().get(i).setVisibility(PdfVisibility.On);
-
-            //Set all the Pdf layers invisible
+        // Iterate through each layer in the document
+        for (int i = 0; i < doc.getLayers().getCount(); i++) {
+            // Set the visibility of the layer to 'Off' to make it invisible
             doc.getLayers().get(i).setVisibility(PdfVisibility.Off);
         }
 
-        //Save the file
+        // Save the modified document with invisible layers
         String output = "output/invisibleAllPdfLayers.pdf";
         doc.saveToFile(output, FileFormat.PDF);
+
+        // Close the document
+        doc.close();
+
+        // Dispose of the PDF document to free up system resources
+        doc.dispose();
+
     }
 }

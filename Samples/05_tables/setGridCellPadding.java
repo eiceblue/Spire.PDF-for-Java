@@ -6,33 +6,46 @@ import java.awt.geom.Point2D;
 public class setGridCellPadding {
     public static void main(String[] args) {
 
+       // Create a new PDF document
         PdfDocument doc = new PdfDocument();
 
-        PdfPageBase page = doc.getPages().add(PdfPageSize.A4,new PdfMargins(40));
+        // Add a page to the document with A4 size and 40mm margins
+        PdfPageBase page = doc.getPages().add(PdfPageSize.A4, new PdfMargins(40));
 
+        // Create a new grid
         PdfGrid grid = new PdfGrid();
 
+        // Set the data source for the grid
         grid.setDataSource(GetData());
 
-        for(int i=0;i<grid.getRows().size();i++) {
+        // Set cell padding for the first row in the grid
+        for (int i = 0; i < grid.getRows().size(); i++) {
             PdfGridRow row = grid.getRows().get(i);
-
             for (int j = 0; j < row.getCells().getCount(); j++) {
-                if(i==0) {
-                    row.getCells().get(j).getStyle().setCellPadding(new PdfPaddings(10,10,10,10));
+                if (i == 0) {
+                    row.getCells().get(j).getStyle().setCellPadding(new PdfPaddings(10, 10, 10, 10));
                 }
                 row.getCells().get(j).setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
             }
         }
 
+        // Draw the grid on the page at the specified location (0, 0)
         grid.draw(page, new Point2D.Float(0, 0));
 
+        // Save the PDF document to the specified output file path
         String result = "output/setGridCellPadding.pdf";
-
         doc.saveToFile(result);
+
+        // Close the PDF document
+        doc.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        doc.dispose();
     }
-    private static String[][] GetData()
-    {
+	
+	
+     private static String[][] GetData() {
+        // Define the data array containing information about countries
         String[] data = {
                 "Name;Capital;Continent;Area;Population",
                 "Argentina;Buenos Aires;South America;2777815;32300003",
@@ -55,12 +68,15 @@ public class setGridCellPadding {
                 "Venezuela;Caracas;South America;912047;19700000"
         };
 
-        String[][] dataSource
-                = new String[data.length][];
-        for (int i = 0; i < data.length; i++)
-        {
+        // Create a 2D array to hold the parsed data
+        String[][] dataSource = new String[data.length][];
+
+        // Split each string in the data array and store it in the dataSource array
+        for (int i = 0; i < data.length; i++) {
             dataSource[i] = data[i].split(";");
         }
+
+        // Return the parsed data
         return dataSource;
     }
 }

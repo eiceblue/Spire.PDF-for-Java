@@ -8,54 +8,88 @@ import java.text.SimpleDateFormat;
 
 public class addTextStamp {
     public static void main(String[] args) {
-        String input = "data/stamp.pdf";
+        // Define the output file path
         String output = "output/addTextStamp.pdf";
 
-        //load a PDF
+        // Load a PDF document from disk
         PdfDocument document = new PdfDocument();
         document.loadFromFile("data/stamp.pdf");
 
-        //get the first page
+        // Get the first page of the document
         PdfPageBase page = document.getPages().get(0);
 
-        //create a pdf template
+        // Create a PDF template with dimensions 125x55 to hold the stamp content
         PdfTemplate template = new PdfTemplate(125, 55);
-        PdfTrueTypeFont font1 = new PdfTrueTypeFont(new Font("Elephant", Font.ITALIC,10), true);
-        PdfSolidBrush brush = new PdfSolidBrush(new PdfRGBColor(139,0, 0));
+
+        // Create a TrueType font for the stamp text
+        PdfTrueTypeFont font1 = new PdfTrueTypeFont(new Font("Elephant", Font.ITALIC, 10), true);
+
+        // Create a solid brush with RGB color (139, 0, 0)
+        PdfSolidBrush brush = new PdfSolidBrush(new PdfRGBColor(139, 0, 0));
+
+        // Create a pen using the solid brush for drawing the border
         PdfPen pen = new PdfPen(brush);
+
+        // Create a rectangle for the stamp annotation
         Rectangle2D rectangle = new Rectangle2D.Float();
         rectangle.setFrame(new Point2D.Float(5, 5), template.getSize());
-        int CornerRadius = 20;
+
+        // Define the corner radius for rounded corners
+        int cornerRadius = 20;
+
+        // Create a path for the stamp shape with rounded corners
         PdfPath path = new PdfPath();
-        path.addArc(template.getBounds().getX(), template.getBounds().getY(), CornerRadius, CornerRadius, 180, 90);
-        path.addArc(template.getBounds().getX() + template.getWidth() - CornerRadius,template.getBounds().getY(), CornerRadius, CornerRadius, 270, 90);
-        path.addArc(template.getBounds().getX() + template.getWidth() - CornerRadius, template.getBounds().getY()+ template.getHeight() - CornerRadius, CornerRadius, CornerRadius, 0, 90);
-        path.addArc(template.getBounds().getX(), template.getBounds().getY() + template.getHeight() - CornerRadius, CornerRadius, CornerRadius, 90, 90);
-        path.addLine( template.getBounds().getX(), template.getBounds().getY() + template.getHeight() - CornerRadius, template.getBounds().getX(), template.getBounds().getY() + CornerRadius / 2);
+        path.addArc(template.getBounds().getX(), template.getBounds().getY(), cornerRadius, cornerRadius, 180, 90);
+        path.addArc(template.getBounds().getX() + template.getWidth() - cornerRadius, template.getBounds().getY(), cornerRadius, cornerRadius, 270, 90);
+        path.addArc(template.getBounds().getX() + template.getWidth() - cornerRadius, template.getBounds().getY() + template.getHeight() - cornerRadius, cornerRadius, cornerRadius, 0, 90);
+        path.addArc(template.getBounds().getX(), template.getBounds().getY() + template.getHeight() - cornerRadius, cornerRadius, cornerRadius, 90, 90);
+        path.addLine(template.getBounds().getX(), template.getBounds().getY() + template.getHeight() - cornerRadius, template.getBounds().getX(), template.getBounds().getY() + cornerRadius / 2);
+
+        // Draw the stamp shape with the pen and path
         template.getGraphics().drawPath(pen, path);
 
-        //draw stamp text
+        // Define the stamp text lines
         String s1 = "REVISED\n";
-        String s2 = "by E-iceblue at " + dateToString(new java.util.Date(),"MM dd, yyyy");
+        String s2 = "by E-iceblue at " + dateToString(new java.util.Date(), "MM dd, yyyy");
+
+        // Create a TrueType font for the stamp text line 2
+        PdfTrueTypeFont font2 = new PdfTrueTypeFont(new Font("Lucida Sans Unicode", Font.BOLD, 9), true);
+
+        // Draw the stamp text lines onto the template using the fonts and brush
         template.getGraphics().drawString(s1, font1, brush, new Point2D.Float(5, 10));
-        PdfTrueTypeFont font2 = new PdfTrueTypeFont(new Font("Lucida Sans Unicode", Font.BOLD,9), true);
         template.getGraphics().drawString(s2, font2, brush, new Point2D.Float(2, 30));
 
-        //create a rubber stamp
+        // Create a rubber stamp annotation with the defined rectangle
         PdfRubberStampAnnotation stamp = new PdfRubberStampAnnotation(rectangle);
+
+        // Create a PDF appearance for the rubber stamp annotation
         PdfAppearance appearance = new PdfAppearance(stamp);
+
+        // Set the normal appearance of the annotation as the created PDF template
         appearance.setNormal(template);
+
+        // Set the appearance of the rubber stamp annotation to the created PDF appearance
         stamp.setAppearance(appearance);
 
-        //draw stamp into page
+        // Add the rubber stamp annotation to the page's annotations widget
         page.getAnnotationsWidget().add(stamp);
 
-        //save the document
+        // Save the modified document to the specified output file
         document.saveToFile(output, FileFormat.PDF);
+
+        // Close the PDF document to release resources
         document.close();
+
+        // Dispose of the PDF document to free up system resources
+        document.dispose();
+
     }
-    public static String dateToString(java.util.Date poDate,String pcFormat){
-        SimpleDateFormat loFormat= new SimpleDateFormat(pcFormat);
-        return  loFormat.format(poDate);
+	
+    public static String dateToString(java.util.Date poDate, String pcFormat) {
+        // Create a SimpleDateFormat object with the specified format
+        SimpleDateFormat loFormat = new SimpleDateFormat(pcFormat);
+
+        // Format the Date object as a string using the created SimpleDateFormat
+        return loFormat.format(poDate);
     }
 }

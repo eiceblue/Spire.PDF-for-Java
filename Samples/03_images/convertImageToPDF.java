@@ -3,29 +3,39 @@ import com.spire.pdf.graphics.PdfImage;
 
 public class convertImageToPDF {
     public static void main(String[] args) {
-        // Create a pdf document with a section and page added.
+        // Create a new PDF document
         PdfDocument pdf = new PdfDocument();
-        PdfSection section = pdf.getSections().add();
+
+        // Add a page to the document
         PdfPageBase page = pdf.getPages().add();
 
-        //Load a tiff image from system
+        // Load a TIFF image from the system
         PdfImage image = PdfImage.fromFile("data/bg.png");
 
-        //Set image display location and size in PDF
-        //Calculate rate
+        // Calculate the fit rate for the image based on its width and height relative to the canvas size
         double widthFitRate = image.getPhysicalDimension().getWidth() / page.getCanvas().getClientSize().getWidth();
         double heightFitRate = image.getPhysicalDimension().getHeight() / page.getCanvas().getClientSize().getHeight();
-        double fitRate = Math.max(widthFitRate, heightFitRate);
 
-        //Calculate the size of image
+        // Determine the maximum fit rate between width and height
+        float fitRate = Math.max((float)widthFitRate, (float)heightFitRate);
+
+        // Calculate the size of the image
         double fitWidth = image.getPhysicalDimension().getWidth() / fitRate;
         double fitHeight = image.getPhysicalDimension().getHeight() / fitRate;
 
-        //Draw image
+        // Draw the image on the page's canvas
         page.getCanvas().drawImage(image, 0, 30, fitWidth, fitHeight);
 
+        // Specify the output file path
         String output = "output/convertImageToPDF.pdf";
+
+        // Save the PDF document
         pdf.saveToFile(output);
+
+        // Close the PDF document
         pdf.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        pdf.dispose();
     }
 }

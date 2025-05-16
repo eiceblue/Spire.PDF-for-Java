@@ -6,38 +6,42 @@ import com.spire.pdf.widget.*;
 
 public class fillImageInButtonField {
     public static void main(String[] args) throws Exception {
+        // Specify the input PDF file paths and the output PDF file path
         String input1 = "data/ButtonField.pdf";
         String input2 = "data/E-logo.png";
         String output = "output/fillImageInButtonField.pdf";
 
-        //load old PDF from disk.
+        // Load the PDF document
         PdfDocument pdf = new PdfDocument();
         pdf.loadFromFile(input1);
 
-        //get pdf forms
-        PdfFormWidget form = (PdfFormWidget)pdf.getForm();
+        // Get the form widget from the document
+        PdfFormWidget form = (PdfFormWidget) pdf.getForm();
 
-        //traverse all the forms
-        for (int i = 0; i < form.getFieldsWidget().getCount(); i++)
-        {
-            //if it is Button field
-            if (form.getFieldsWidget().get(i) instanceof PdfButtonWidgetFieldWidget)
-            {
-                PdfButtonWidgetFieldWidget field = (PdfButtonWidgetFieldWidget)form.getFieldsWidget().get(i);
-                if (field.getName().equals( "Button1"))
-                    {
-                    //set "true" to fit bounds
+        // Iterate through each field in the form
+        for (int i = 0; i < form.getFieldsWidget().getCount(); i++) {
+            // Check if the field is a button form field
+            if (form.getFieldsWidget().get(i) instanceof PdfButtonWidgetFieldWidget) {
+                PdfButtonWidgetFieldWidget field = (PdfButtonWidgetFieldWidget) form.getFieldsWidget().get(i);
+                // Check if the button field has the specified name
+                if (field.getName().equals("Button1")) {
+                    // Configure the button field's icon layout
                     field.getIconLayout().isFitBounds(true);
-
-                    //fill the annotation rectangle exactly without its original aspect ratio
                     field.getIconLayout().setScaleMode(PdfButtonIconScaleMode.Anamorphic);
 
-                    //fill an image
+                    // Set the image for the button field using the specified image file
                     field.setButtonImage(PdfImage.fromImage(input2));
                 }
             }
         }
-        //save to a file
+
+        // Save the modified PDF document to the output file
         pdf.saveToFile(output, FileFormat.PDF);
+
+        // Close the PDF document to release resources
+        pdf.close();
+
+        // Dispose of the PDF document to free up system resources
+        pdf.dispose();
     }
 }

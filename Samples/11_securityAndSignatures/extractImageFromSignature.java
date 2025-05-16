@@ -7,25 +7,32 @@ import java.io.*;
 
 public class extractImageFromSignature {
     public static void main(String[] args) throws IOException {
+        // Specify the input file path
         String input = "data/extractImageFromSignature.pdf";
 
-        //load a pdf document
+        // Create a new PdfDocument object
         PdfDocument doc = new PdfDocument();
+
+        // Load an existing PDF document from the input file path
         doc.loadFromFile(input);
 
-        //get the existing form of the document
-        PdfFormWidget form = (PdfFormWidget)doc.getForm() ;
+        // Get the form widget of the document
+        PdfFormWidget form = (PdfFormWidget) doc.getForm();
 
-        //extract images from signatures in the existing form
+        // Extract the signature images from the form widget
         Image[] images = form.extractSignatureAsImages();
 
-        //save the images to disk
-        int i = 0;
-        for (int j = 0; j < images.length; j++)
-        {
-            ImageIO.write((RenderedImage) images[j], "png", new File("output/" + i + ".png"));
-            i++;
+        // Save each extracted image as a PNG file
+        for (int i = 0; i < images.length; i++) {
+            ImageIO.write((RenderedImage) images[i], "png", new File("output/" + i + ".png"));
         }
-        System.out.println("Images have been sucessfully extracted.");
+
+        System.out.println("Images have been successfully extracted.");
+
+        // Close the PDF document to release resources
+        doc.close();
+
+        // Dispose of the PDF document to free up system resources
+        doc.dispose();
     }
 }

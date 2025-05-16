@@ -7,69 +7,89 @@ import java.awt.geom.*;
 
 public class embedGridInCell {
     public static void main(String[] args) {
-        String inputFile="data/embedGridInCell.pdf";
-        String outputFile="output/embedGridInCell_result.pdf";
+          // Define input path and output path
+        String inputFile = "data/embedGridInCell.pdf";
+        String outputFile = "output/embedGridInCell_result.pdf";
 
-        //Create a pdf document and load file from disk
+        // Create a new PdfDocument and load the input file from disk
         PdfDocument doc = new PdfDocument();
         doc.loadFromFile(inputFile);
 
-        //Get the first page
+        // Get the first page of the document
         PdfPageBase page = doc.getPages().get(0);
 
-        //Create a pdf grid
+        // Create a new PdfGrid
         PdfGrid grid = new PdfGrid();
 
-        //Add a row
+        // Add a row to the grid
         PdfGridRow row = grid.getRows().add();
 
-        //Set the width of the first row
+        // Set the height of the first row
         row.setHeight(80);
 
-        //Add two columns
+        // Add two columns to the grid
         grid.getColumns().add(2);
 
-        //Set the width of the first column
+        // Set the width of the first column
         grid.getColumns().get(0).setWidth(120);
         grid.getColumns().get(1).setWidth(300);
 
+        // Set the value of the cell in the first column and format it
         row.getCells().get(0).setValue("Embedded grid");
         row.getCells().get(0).setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
 
+        // Define the dimensions for the image
         Dimension2D imageSize = new Dimension(70, 70);
 
-        float LR = (float)(grid.getColumns().get(0).getWidth()-imageSize.getWidth())/2;
-        //Set the cell padding
+        // Calculate the left and right padding for the cell
+        float LR = (float) (grid.getColumns().get(0).getWidth() - imageSize.getWidth()) / 2;
+
+        // Set the cell padding for the grid
         grid.getStyle().setCellPadding(new PdfPaddings(LR, LR, 1, 1));
+
+        // Create a PdfGridCellContentList to hold the image
         PdfGridCellContentList list = new PdfGridCellContentList();
+
+        // Create a PdfGridCellContent for the image and set its value
         PdfGridCellContent textAndStyle = new PdfGridCellContent();
         textAndStyle.setImage(PdfImage.fromFile("data/E-iceblueLogo.png"));
 
-
-        //Set the size of image
+        // Set the size of the image
         textAndStyle.setImageSize(imageSize);
+
+        // Add the image to the list
         list.getList().add(textAndStyle);
 
-        //Add an image into the first cell
+        // Set the value of the cell in the first column to the list of images
         row.getCells().get(0).setValue(list);
 
-        //Create another grid
+        // Create another PdfGrid
         PdfGrid grid2 = new PdfGrid();
+
+        // Add two columns to the second grid
         grid2.getColumns().add(2);
+
+        // Add a row to the second grid
         PdfGridRow newrow = grid2.getRows().add();
+
+        // Set the width of the columns in the second grid
         grid2.getColumns().get(0).setWidth(120);
         grid2.getColumns().get(1).setWidth(120);
+
+        // Set the value and string format for the first cell in the new row
         newrow.getCells().get(0).setValue("Embedded grid");
         newrow.getCells().get(0).setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
+
+        // Set the value and string format for the second cell in the new row
         newrow.getCells().get(1).setValue("Embedded grid");
         newrow.getCells().get(1).setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
 
-        //Assign grid2 to the cell
+        // Assign 'grid2' to the second cell in the 'row'
         row.getCells().get(1).setValue(grid2);
         row.getCells().get(1).setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
 
-        String[] data
-                = {
+        // Define an array of data for populating the grid
+        String[] data = {
                 "VendorName;Address1 & City & State & Country",
                 "Cacor Corporation;161 Southfield Rd  & Southfield & OH & U.S.A.",
                 "Underwater; 50 N 3rd Street & Indianapolis & IN & U.S.A.",
@@ -89,20 +109,27 @@ public class embedGridInCell {
                 "Undersea Systems;18112 Gotham Street & Huntington Beach & C & U.S.A.",
         };
 
-        //Insert data to grid
+        // Insert data into the grid
         for (int r = 0; r < data.length; r++) {
             PdfGridRow row1 = grid.getRows().add();
             String[] rowData = data[r].split(";");
-            for (int c = 0; c < rowData.length; c++)
-            {
+            for (int c = 0; c < rowData.length; c++) {
+                // Set the value and string format for each cell in the row
                 row1.getCells().get(c).setValue(rowData[c]);
                 row1.getCells().get(c).setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
             }
         }
-        //Draw pdf grid into page at a specific location
-        grid.draw(page,new Point(80,330));
 
-        //Save the pdf document
+        // Draw the PDF grid onto the page at a specific location
+        grid.draw(page, new Point(80, 330));
+
+        // Save the PDF document to the specified output file
         doc.saveToFile(outputFile);
+
+        // Close the PDF document
+        doc.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        doc.dispose();
     }
 }

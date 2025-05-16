@@ -4,55 +4,65 @@ import java.io.*;
 
 public class getLinkAnnotation {
     public static void main(String[] args) throws Exception {
+        // Define input and output file paths
         String input = "data/linkAnnotation.pdf";
         String output = "output/getLinkAnnotation.txt";
 
-        //create a pdf document
+        // Load the PDF document
         PdfDocument doc = new PdfDocument();
-
-        //load file from disk
         doc.loadFromFile(input);
 
-        //get the first page
+        // Get the first page of the document
         PdfPageBase page = doc.getPages().get(0);
 
-        //get the annotation collection
+        // Get the collection of annotations on the page
         PdfAnnotationCollection annotations = page.getAnnotationsWidget();
-        
-        //verify whether widgetCollection is not null or not
-        String result = null;
-        if (annotations.getCount() > 0)
-        {
-            //traverse the PdfAnnotationCollection
-            for (int i=0; i<annotations.getCount();i++)
-            {
-                PdfAnnotation pdfAnnotation =annotations.get(i);
-                //if it is PdfTextWebLinkAnnotationWidget
-                if (pdfAnnotation instanceof PdfTextWebLinkAnnotationWidget)
-                {
-                    //get the link annotation
-                    PdfTextWebLinkAnnotationWidget WebLinkAnnotation = (PdfTextWebLinkAnnotationWidget)pdfAnnotation ;
-                    String url = WebLinkAnnotation.getUrl();
 
-                    //set string format for displaying
-                    result= String.format("The url of link annotation is " + url + "\r\nThe text of link annotation is " + WebLinkAnnotation.getText());
+        // Verify whether the annotation collection is not null and contains annotations
+        String result = null;
+        if (annotations.getCount() > 0) {
+            // Iterate through each annotation in the collection
+            for (int i = 0; i < annotations.getCount(); i++) {
+                PdfAnnotation pdfAnnotation = annotations.get(i);
+                // Check if the annotation is a text web link annotation
+                if (pdfAnnotation instanceof PdfTextWebLinkAnnotationWidget) {
+                    // Cast the annotation to a text web link annotation
+                    PdfTextWebLinkAnnotationWidget webLinkAnnotation = (PdfTextWebLinkAnnotationWidget) pdfAnnotation;
+                    // Extract the URL and text from the web link annotation
+                    String url = webLinkAnnotation.getUrl();
+                    result = String.format("The URL of the link annotation is " + url +
+                            "\r\nThe text of the link annotation is " + webLinkAnnotation.getText());
                 }
             }
         }
-        //save them to a txt file
+
+        // Write the extracted results to the output file
         writeStringToTxt(result, output);
+
+        // Close the PDF document to release resources
+        doc.close();
+
+        // Dispose of the PDF document to free up system resources
+        doc.dispose();
     }
+	
+	
     public static void writeStringToTxt(String content, String txtFileName) throws IOException {
-        FileWriter fWriter= new FileWriter(txtFileName,true);
+        // Create a FileWriter object with the given text file name and enable append mode
+        FileWriter fWriter = new FileWriter(txtFileName, true);
         try {
+            // Write the content to the file
             fWriter.write(content);
-        }catch(IOException ex){
+        } catch (IOException ex) {
+            // Print the stack trace if an I/O error occurs
             ex.printStackTrace();
-        }finally{
-            try{
+        } finally {
+            try {
+                // Flush the writer and close the file
                 fWriter.flush();
                 fWriter.close();
             } catch (IOException ex) {
+                // Print the stack trace if an I/O error occurs while flushing or closing the file
                 ex.printStackTrace();
             }
         }

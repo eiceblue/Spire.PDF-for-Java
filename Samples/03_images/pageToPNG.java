@@ -5,23 +5,32 @@ import java.io.File;
 
 public class pageToPNG {
     public static void main(String[] args) throws Exception{
-        //Pdf file
+        // Specify the input PDF file path
         String input = "data/PDFTemplate-Az.pdf";
 
-        //Open pdf document
+        // Create a new PdfDocument instance and load the PDF from file
         PdfDocument pdf = new PdfDocument();
         pdf.loadFromFile(input);
 
-        //Convert a particular page to png
-        //Set page index and image name
+        // Specify the page index to convert to image
         int pageIndex = 1;
+
+        // Specify the output file name for the PNG image
         String fileName = "pageToPNG.png";
 
-        //Save page to image
+        // Convert the specified page of the PDF to a BufferedImage
         BufferedImage image = pdf.saveAsImage(pageIndex);
-        File file = new File( "output/" + fileName);
+
+        // Create a new File object for the output PNG file
+        File file = new File("output/" + fileName);
+
+        // Write the BufferedImage as a PNG image file
         ImageIO.write(image, "PNG", file);
 
+        // Close the PDF document
         pdf.close();
+
+        // Dispose of the PDF document (frees up system resources)
+        pdf.dispose();
     }
 }

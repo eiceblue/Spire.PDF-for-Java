@@ -4,30 +4,48 @@ import com.spire.pdf.widget.*;
 
 public class determineRequiredField {
     public static void main(String[] args) {
+        // Specify the input and output file paths
         String inputFile = "data/determineRequiredField.pdf";
         String outputFile = "output/determineRequiredField.pdf";
+
+        // Load the PDF document
         PdfDocument doc = new PdfDocument();
         doc.loadFromFile(inputFile);
 
-        com.spire.pdf.fields.PdfForm tempVar = doc.getForm();
-        PdfFormWidget formWidget = (PdfFormWidget) ((tempVar instanceof PdfFormWidget) ? tempVar : null);
+        // Get the form widget from the document
+        PdfFormWidget formWidget = (PdfFormWidget) doc.getForm();
 
-        //Find the particular form field and determine if it marks as required or not
+        // Iterate through each field in the form
         for (int i = 0; i < formWidget.getFieldsWidget().getList().size(); i++) {
-            PdfField field = (PdfField) ((formWidget.getFieldsWidget().getList().get(i) instanceof PdfField) ? formWidget.getFieldsWidget().getList().get(i) : null);
+            // Get the current field
+            PdfField field = (PdfField) formWidget.getFieldsWidget().getList().get(i);
 
+            // Check if the field is a text box field
             if (field instanceof PdfTextBoxFieldWidget) {
-                PdfTextBoxFieldWidget textbox = (PdfTextBoxFieldWidget) ((field instanceof PdfTextBoxFieldWidget) ? field : null);
+                // Cast the field to a text box field
+                PdfTextBoxFieldWidget textbox = (PdfTextBoxFieldWidget) field;
+
+                // Check if the text box field has the name "username"
                 if (textbox.getName().equals("username")) {
+                    // Set the text box field as required
                     textbox.setRequired(true);
                 }
+
+                // Check if the text box field has the name "password2"
                 if (textbox.getName().equals("password2")) {
+                    // Set the text box field as not required
                     textbox.setRequired(false);
                 }
             }
         }
 
+        // Save the modified PDF document to the output file
         doc.saveToFile(outputFile);
+
+        // Close the PDF document to release resources
         doc.close();
+
+        // Dispose of the PDF document to free up system resources
+        doc.dispose();     
     }
 }

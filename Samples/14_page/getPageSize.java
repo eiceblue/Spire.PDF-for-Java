@@ -10,7 +10,6 @@ public class getPageSize {
         //Create a pdf document
         PdfDocument doc = new PdfDocument();
 
-
         //Load an existing pdf from disk
         doc.loadFromFile(input);
 
@@ -28,31 +27,37 @@ public class getPageSize {
 
         //Convert the size with "pixel"
         float pixelWidth = unitCvtr.convertUnits((float) pointWidth, PdfGraphicsUnit.Point, PdfGraphicsUnit.Pixel);
-        float pixelHeight = unitCvtr.convertUnits((float)pointHeight, PdfGraphicsUnit.Point, PdfGraphicsUnit.Pixel);
+        float pixelHeight = unitCvtr.convertUnits((float) pointHeight, PdfGraphicsUnit.Point, PdfGraphicsUnit.Pixel);
 
         //Convert the size with "inch"
-        float inchWidth = unitCvtr.convertUnits((float)pointWidth, PdfGraphicsUnit.Point, PdfGraphicsUnit.Inch);
-        float inchHeight = unitCvtr.convertUnits((float)pointHeight, PdfGraphicsUnit.Point, PdfGraphicsUnit.Inch);
+        float inchWidth = unitCvtr.convertUnits((float) pointWidth, PdfGraphicsUnit.Point, PdfGraphicsUnit.Inch);
+        float inchHeight = unitCvtr.convertUnits((float) pointHeight, PdfGraphicsUnit.Point, PdfGraphicsUnit.Inch);
 
         //Convert the size with "centimeter"
-        float centimeterWidth = unitCvtr.convertUnits((float)pointWidth, PdfGraphicsUnit.Point, PdfGraphicsUnit.Centimeter);
-        float centimeterHeight = unitCvtr.convertUnits((float)pointHeight, PdfGraphicsUnit.Point, PdfGraphicsUnit.Centimeter);
+        float centimeterWidth = unitCvtr.convertUnits((float) pointWidth, PdfGraphicsUnit.Point, PdfGraphicsUnit.Centimeter);
+        float centimeterHeight = unitCvtr.convertUnits((float) pointHeight, PdfGraphicsUnit.Point, PdfGraphicsUnit.Centimeter);
 
         //Create StringBuilder to save
         StringBuilder content = new StringBuilder();
 
-
         //Add pointSize string to StringBuilder
-        content.append("The page size of the file is (width: " + pointWidth + "pt, height: " + pointHeight + "pt)."+"\r\n");
-        content.append("The page size of the file is (width: "+ pixelWidth + "pixel, height: "+ pixelHeight + "pixel)."+"\r\n");
-        content.append( "The page size of the file is (width: "+ inchWidth + "inch, height: " + inchHeight + "inch)."+"\r\n" );
-        content.append("The page size of the file is (width: " + centimeterWidth + "cm, height: " + centimeterHeight + "cm.)"+"\r\n");
+        content.append("The page size of the file is (width: " + pointWidth + "pt, height: " + pointHeight + "pt)." + "\r\n");
+        content.append("The page size of the file is (width: " + pixelWidth + "pixel, height: " + pixelHeight + "pixel)." + "\r\n");
+        content.append("The page size of the file is (width: " + inchWidth + "inch, height: " + inchHeight + "inch)." + "\r\n");
+        content.append("The page size of the file is (width: " + centimeterWidth + "cm, height: " + centimeterHeight + "cm.)" + "\r\n");
 
-        //Save them to a txt file
+        // Create a FileWriter to write information to the output file
         FileWriter writer = new FileWriter(output);
         writer.write(content.toString());
         writer.flush();
         writer.close();
+
+        // Close the PDF document to release resources
         doc.close();
+
+        // Dispose of the PDF document to free up system resources
+        doc.dispose();
     }
+
+
 }
