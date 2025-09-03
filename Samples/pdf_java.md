@@ -9973,6 +9973,24 @@ doc.dispose();
 
 ---
 
+# PDF to Markdown Conversion
+## Convert PDF document to Markdown format using Spire.PDF library
+```java
+// Create a new PdfDocument
+PdfDocument doc = new PdfDocument();
+
+// Load the PDF document from the input file
+doc.loadFromFile(input);
+
+// Save the loaded document to Markdown
+doc.saveToFile(output, FileFormat.Markdown);
+
+// Close the document
+doc.close();
+```
+
+---
+
 # Spire PDF Document Comparison
 ## Compare two PDF documents and highlight differences
 ```java
