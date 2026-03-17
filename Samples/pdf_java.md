@@ -11419,3 +11419,25 @@ doc.loadFromStream(stream,"123456");
 
 ---
 
+# PDF Table Column Width
+## Set column widths in a PDF table
+```java
+// Create a PdfTable object and set its properties
+PdfTable table = new PdfTable();
+table.getStyle().setCellPadding(2);
+table.getStyle().setHeaderSource(PdfHeaderSource.Rows);
+table.getStyle().setHeaderRowCount(1);
+table.getStyle().setShowHeader(true);
+table.getStyle().isFixWidth(true);
+table.setDataSource(dataSource);
+
+// Set column width
+for(int i = 0; i < table.getColumns().getCount(); i++)
+{
+    PdfColumn column = table.getColumns().get(i);
+    column.setWidth(100);
+    column.setStringFormat(new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle));
+}
+```
+
+---
