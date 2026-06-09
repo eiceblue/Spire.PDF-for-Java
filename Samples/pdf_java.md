@@ -11441,3 +11441,41 @@ for(int i = 0; i < table.getColumns().getCount(); i++)
 ```
 
 ---
+# spire.pdf java convert pdf version  
+## Convert an existing PDF document to PDF version 2.0  
+```java
+PdfDocument doc = new PdfDocument("Data/ConvertToPDFVersion2.pdf");
+doc.getFileInfo().setVersion(PdfVersion.Version_2_0);
+doc.saveToFile("ConvertToPDFVersion2.pdf");
+```
+
+---
+
+# spire.pdf java compare
+## Compare two PDF documents from streams
+```java
+// Create a new PdfDocument object
+PdfDocument pdf1 = new PdfDocument();
+// Load the first PDF document from the stream
+pdf1.loadFromStream(inputStream1);
+
+// Create a new PdfDocument object
+PdfDocument pdf2 = new PdfDocument();
+// Load the second PDF document from stream
+pdf2.loadFromStream(inputStream2);
+
+// Create a PdfComparer object with pdf1 and pdf2 as parameters
+PdfComparer compare = new PdfComparer(pdf1, pdf2);
+// Set the page ranges to be compared
+compare.getOptions().setPageRanges(0, pdf1.getPages().getCount() - 1, 0, pdf2.getPages().getCount() - 1);
+
+// Compare the PDF documents and save the result to the output stream
+compare.compare(outputStream);
+
+// Dispose of system resources
+pdf1.dispose();
+pdf2.dispose();
+```
+
+---
+
