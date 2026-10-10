@@ -11478,4 +11478,203 @@ pdf2.dispose();
 ```
 
 ---
+# Java Core Function
+## Create custom signature format
+```java
+// Create a PDF document and add a page for the signature
+PdfDocument document = new PdfDocument();
+PdfPageBase pdfPageBase = document.getPages().add();
+
+// Load the digital certificate
+PdfCertificate certificate = new PdfCertificate("Data/gary.pfx", "e-iceblue");
+
+// Create a PKCS#7 formatter
+PdfPKCS7Formatter formatter = new PdfPKCS7Formatter(certificate, false);
+
+// Create an MDP signature maker with Level 2 permissions
+PdfMDPSignatureMaker signatureMaker = new PdfMDPSignatureMaker(document, formatter, PdfMDPSignatureMaker.Level2Permissions);
+
+// Prepare the signature and get the signature object
+signatureMaker.makeSignature("signName");
+PdfSignature signature = signatureMaker.getSignature();
+
+// Set signature metadata
+signature.setName("Gary");
+signature.setReason("This is the final version.");
+signature.setLocation("U.S.");
+signature.setContactInfo("112554");
+
+// Create a custom signature appearance
+PdfSignatureAppearance appearance = new PdfSignatureAppearance(signature);
+appearance.setNameLabel("Signer: ");
+appearance.setReasonLabel("Reason: ");
+appearance.setLocationLabel("Location: ");
+appearance.setContactInfoLabel("Phone: ");
+
+// Set the signature image
+PdfImage image = PdfImage.fromFile("Data/E-iceblueLogo.png");
+appearance.setSignatureImage(image);
+appearance.setGraphicMode(GraphicMode.SignImageAndSignDetail);
+
+// Define the signature rectangle
+Rectangle2D rect = new Rectangle2D.Float();
+rect.setFrame(new Point2D.Float(200, 550), new Dimension(260, 100));
+
+// Apply the custom signature to the page
+signatureMaker.makeSignature("Signature", pdfPageBase,
+        (float) rect.getMinX(), (float) rect.getMinY(),
+        (float) rect.getWidth(), (float) rect.getHeight(),
+        appearance);
+```
+
+---
+
+# spire.pdf java signature
+## sign PDF with SHA-256 algorithm
+```java
+// Create signature formatter with a certificate
+PdfPKCS7Formatter formatter = new PdfPKCS7Formatter(new PdfCertificate("Data/gary.pfx", "e-iceblue"), false);
+
+// Initialize MDP signature maker with existing PDF document
+PdfMDPSignatureMaker pdfMDPSignatureMaker = new PdfMDPSignatureMaker(pdfDocument, formatter);
+
+// Get signature object and set signer details
+PdfSignature signature = pdfMDPSignatureMaker.getSignature();
+signature.setName("e-iceblue");
+signature.setContactInfo("028-81705109");
+signature.setLocation("chengdu");
+signature.setReason("Sign a pdf document.");
+
+// Configure signature appearance labels
+PdfSignatureAppearance appearance = new PdfSignatureAppearance(signature);
+appearance.setNameLabel("Signer: ");
+appearance.setContactInfoLabel("ContactInfo: ");
+appearance.setLocationLabel("Location: ");
+appearance.setReasonLabel("Reason: ");
+
+// Apply signature to the first page
+pdfMDPSignatureMaker.makeSignature("signName", pdfDocument.getPages().get(0), 300, 550, 200, 100, appearance);
+
+// Set SHA-256 hash algorithm
+formatter.getProperties().setHashAlgorithm(HashAlgorithmType.SHA256);
+```
+
+---
+
+# Java PDF conversion progress callback
+## Register a custom IProgressNotifier to track OFD to PDF and PDF to Word conversion progress.
+
+```java
+public class conversionProgressCallback {
+    public static void main(String[] args) {
+        // Create progress notifiers for each conversion
+        CustomProgressNotifier ofdNotifier = new CustomProgressNotifier();
+        CustomProgressNotifier pdfNotifier = new CustomProgressNotifier();
+
+        // Convert OFD to PDF and track progress
+        OfdConverter ofdConverter = new OfdConverter("input.ofd");
+        ofdConverter.registerProgressNotifier(ofdNotifier);
+        ofdConverter.toPdf("output.pdf");
+        ofdConverter.dispose();
+
+        // Convert PDF to Word and track progress
+        PdfToWordConverter converter = new PdfToWordConverter("input.pdf");
+        converter.registerProgressNotifier(pdfNotifier);
+        converter.saveToDocx("output.docx");
+        converter.dispose();
+    }
+}
+
+class CustomProgressNotifier implements IProgressNotifier {
+    private StringBuilder progressMessages = new StringBuilder();
+
+    @Override
+    public void notify(float progress) {
+        progressMessages.append("Progress: ").append(progress).append("%\n");
+    }
+}
+```
+
+---
+
+# Java Core Function
+## Convert OFD to PDF with a specified default font
+
+```java
+// Initialize the converter with the source OFD file
+OfdConverter converter = new OfdConverter("Data/ofdToPDFSample.ofd");
+
+// Set the default font used during conversion
+converter.getOptions().setDefaultFontName("Arial");
+
+// Convert the OFD file to PDF
+converter.toPdf("OFDToPDFWithDefaultFont.pdf");
+
+// Release converter resources
+converter.dispose();
+```
+
+---
+
+# create PDF progress callback
+## Register a custom progress notifier to track PDF conversion progress and write progress to a file.
+
+```java
+public class createPDFProgressCallback {
+    public static void main(String[] args) {
+        // Create a PDF document
+        PdfDocument pdf = new PdfDocument();
+
+        // Add a page
+        pdf.getPages().add();
+
+        // Register a custom progress notifier to track conversion progress
+        pdf.registerProgressNotifier(new CustomProgressNotifier("Progress.txt"));
+
+        // Save the document (triggers progress notifications)
+        pdf.saveToFile("createPDFProgressCallback.pdf", FileFormat.PDF);
+
+        // Close and dispose the document
+        pdf.close();
+        pdf.dispose();
+    }
+}
+
+class CustomProgressNotifier implements IProgressNotifier {
+    private StringBuilder str = new StringBuilder();
+    private String outputFile;
+
+    public CustomProgressNotifier(String outputFile) {
+        this.outputFile = outputFile;
+    }
+
+    @Override
+    public void notify(float progress) {
+        str.append("==============Progress: ").append(progress).append("%==============\n");
+        try {
+            Files.write(Paths.get(outputFile), str.toString().getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            // exception handling
+        }
+    }
+}
+```
+
+---
+
+# spire.pdf java document settings
+## set PDF reading direction and language
+```java
+// Create a PDF document instance
+PdfDocument pdf = new PdfDocument();
+
+// Set the reading direction of the PDF document to Left-To-Right
+pdf.getViewerPreferences().setReadingDirection(PdfReadingDirection.LeftToRight);
+
+// Set the language of the PDF document to English
+pdf.setLanguage("English");
+```
+
+---
+
 
